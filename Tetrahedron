@@ -1,0 +1,84 @@
+// Used 3 js' dpcs
+// Import THREE
+import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+
+// Create Renderer (from docs)
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+//my own animate function with the help of threejs' docs
+
+  function animate()
+  {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+
+// Create Camera and Scene (from docs)
+const camera = new THREE.PerspectiveCamera(
+  45,
+  window.innerWidth / window.innerHeight,
+  1,
+  500,
+);
+camera.position.set(0, 0, 100);
+const scene = new THREE.Scene();
+const controls = new OrbitControls(camera, renderer.domElement);
+
+//threejs blue material (from docs)
+const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+
+//list of points used for my triangles
+const t1points = [];
+const t2points = [];
+const t3points = [];
+const t4points = [];
+
+//triangle 1 points
+t1points.push(new THREE.Vector3(-20, 0, 0));
+t1points.push(new THREE.Vector3(0, 20, 0));
+t1points.push(new THREE.Vector3(20, 0, 0));
+t1points.push(new THREE.Vector3(-20, 0, 0));
+
+//triangle 2 points
+t2points.push(new THREE.Vector3(-20, 0, 0));
+t2points.push(new THREE.Vector3(0, 0,-20));
+t2points.push(new THREE.Vector3(0, 20, 0));
+t2points.push(new THREE.Vector3(-20, 0, 0));
+
+//triangle 3 points
+t3points.push(new THREE.Vector3(20, 0, 0));
+t3points.push(new THREE.Vector3(0, 0, -20));
+t3points.push(new THREE.Vector3(0, 20, 0));
+t3points.push(new THREE.Vector3(20, 0, 0));
+
+//Triangle 4 points
+t4points.push(new THREE.Vector3(-20,0,0));
+t4points.push(new THREE.Vector3(0,0,10));
+t4points.push(new THREE.Vector3(20,0,0));
+t4points.push(new THREE.Vector3(-20,0,0));
+
+//creation of geometry for all triangles
+const geometryt1 = new THREE.BufferGeometry().setFromPoints(t1points);
+const geometryt2 = new THREE.BufferGeometry().setFromPoints(t2points);
+const geometryt3 = new THREE.BufferGeometry().setFromPoints(t3points);
+const geometryt4 = new THREE.BufferGeometry().setFromPoints(t4points);
+
+//creation of triangles
+const Triangle1 = new THREE.Line(geometryt1, material);
+const Triangle2 = new THREE.Line(geometryt2, material);
+const Triangle3= new THREE.Line(geometryt3, material);
+const Triangle4= new THREE.Line(geometryt4, material);
+
+//adding triangles to the scene
+scene.add(Triangle1);
+scene.add(Triangle2);
+scene.add(Triangle3);
+
+
+//animating scene
+animate();
