@@ -1,3 +1,4 @@
+//THIS IS A JAVA SCRIPT CODE
 // Used 3 js' docs
 // Import THREE
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/build/three.module.js';
