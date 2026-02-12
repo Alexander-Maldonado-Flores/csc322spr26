@@ -1,0 +1,84 @@
+//THIS IS A JAVA SCRIPT CODE
+
+//========================
+//CSC 322 - Homework 3
+//Implicit Curve Visualization
+//F(x,y) = (x^2+y^2)^2 -4(x^2-y^2)
+
+
+// Used 3 js' dpcs
+// Import THREE
+import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+
+// Create Camera and Scene and Renderer\ (from docs)
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+
+const camera = new THREE.PerspectiveCamera(
+  45,
+  window.innerWidth / window.innerHeight,
+  .1,
+  1000,
+);
+camera.position.set(0, 0, 50);
+camera.lookAt(0,0,0);
+
+// Create Renderer (from class docs) only modification is antialias which smoothes out jagged edges
+const renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+//Orbit Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+
+//creating visible x, y, and z axes of length 5 and adding it to the scene
+const myAxes = new THREE.AxesHelper(5);
+scene.add(myAxes);
+
+//F(x,y)=(x^2+y^2)^2-4(x^2-y^2)
+function F(x, y)
+{
+  const x2 = x * x;
+  const y2 = y * y;
+  return (x2+y2) * (x2+y2) - 4 * (x2-y2);
+}
+
+//points needed for sample+ counter for axes and threshold for distance
+const points = [];
+const counter = .05;
+const threshold = .05;
+
+for(let x = -5; x<=5; x += counter)
+{
+  for(let y = -5; y<=5; y += counter)
+  {
+    if(Math.abs(F(x,y))<threshold)
+    {
+      points.push(new THREE.Vector3(x,y,0));
+    }
+  }
+}
+
+// Geometry and material
+const geometry = new THREE.BufferGeometry().setFromPoints(points);
+const material = new THREE.PointsMaterial({
+  color: 0xffffff,
+  size: .05
+});
+
+//curve going into scene
+const curve = new THREE.Points(geometry, material);
+scene.add(curve);
+
+//my own animate function with the help of threejs' docs
+
+  function animate()
+  {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+//animating scene
+animate();
