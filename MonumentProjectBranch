@@ -1,0 +1,128 @@
+//THIS IS A JAVA SCRIPT CODE
+// Used 3 js' docs
+// Import THREE
+import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+
+// Create Renderer (from docs)
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+//my own animate function with the help of threejs' docs
+
+  function animate()
+  {
+    requestAnimationFrame(animate);
+    monumentGroup.rotation.y += .005;
+    //controls.update();
+    renderer.render(scene, camera);
+  }
+
+
+// Create Camera and Scene (from docs)
+const camera = new THREE.PerspectiveCamera(
+  45,
+  window.innerWidth / window.innerHeight,
+  1,
+  500,
+);
+camera.position.set(0, 0, 0);
+camera.lookAt(0,0,0);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('black');
+//const controls = new OrbitControls(camera, renderer.domElement);
+
+const b = 27.5;
+const t = 17;
+const heightBase = 500;
+const heightTotal = 555;
+//"Floor" square
+const bottomLeft0 = new THREE.Vector3(-b,-b,0);
+const topLeft0 = new THREE.Vector3(-b,b,0);
+const bottomRight0 = new THREE.Vector3(b,-b,0);
+const topRight0 = new THREE.Vector3(b,b,0);
+
+//Square before Pyramid
+const bottomLeft1 = new THREE.Vector3(-t,-t,heightBase);
+const topLeft1 = new THREE.Vector3(-t,t,heightBase);
+const bottomRight1 = new THREE.Vector3(t,-t,heightBase);
+const topRight1 = new THREE.Vector3(t,t,heightBase);
+
+//Tip of the monument
+const monumentTip = new THREE.Vector3(0,0,heightTotal);
+
+//face builder function
+function makeFace(points, material)
+{
+  const geom = new THREE.BufferGeometry();
+  const verts = [];
+  
+  if(points.length === 3){
+    //one triangle
+    points.forEach(p => { verts.push(p.x, p.y, p.z); }
+    );
+  } else if(points.length===4){
+    const[p0, p1, p2, p3] = points;
+    [p0, p1, p2, p0, p2, p3].forEach(p=>{verts.push(p.x, p.y, p.z);});
+  }
+
+
+  geom.setAttribute('position', new THREE.Float32BufferAttribute(verts,3));
+  geom.computeVertexNormals();
+
+  return new THREE.Mesh(geom, material);
+}
+  //Making the sides different colors
+  //ColorKeyword
+  const materialFront = new THREE.MeshBasicMaterial({color: 'red'}); 
+  
+  //hexidecimal: Green
+  const materialBack = new THREE.MeshBasicMaterial({color: 0x00ff00}); 
+ 
+  // CSS String
+  const materialLeft = new THREE.MeshBasicMaterial({color: 'lightblue'});
+
+  // RGB format (CSS rgb) This will give orange
+  const materialRight = new THREE.MeshBasicMaterial({color: 'rgb(255, 165, 0)'});
+
+  // RGB format (THREE.Color) yellowish green color
+  const colorTop1 = new THREE.Color();
+  colorTop1.setRGB(0.8, 0.8, 0.2);
+  const materialTop1= new THREE.MeshBasicMaterial({color: colorTop1});
+
+  // This will give purple
+  const materialTop2= new THREE.MeshBasicMaterial({color: 'rgb(128, 0, 128)'});
+  //cyan
+  const materialTop3= new THREE.MeshBasicMaterial({color: 0x00ffff});
+
+  //yellow
+  const materialTop4= new THREE.MeshBasicMaterial({color: 'yellow'});
+
+
+
+const monumentGroup = new THREE.Group();
+
+//long part (quads)
+const frontFace = makeFace([bottomLeft0, bottomRight0, bottomRight1, bottomLeft1], materialFront);
+const backFace = makeFace([topRight0, topLeft0, topLeft1, topRight1], materialBack)
+const leftFace = makeFace([topLeft0, bottomLeft0, bottomLeft1, topLeft1], materialLeft)
+const rightFace = makeFace([bottomRight0, topRight0, topRight1, bottomRight1], materialRight);
+
+//Pyramid (triangles)
+const pyramidFront = makeFace([bottomLeft1, bottomRight1, monumentTip], materialTop1);
+const pyramidRight = makeFace([bottomRight1, topRight1, monumentTip], materialTop2);
+const pyramidBack = makeFace([topRight1, topLeft1, monumentTip],materialTop3);
+const pyramidLeft = makeFace([topLeft1, bottomLeft1, monumentTip],materialTop4);
+
+
+//Grouping in order to add to scene
+monumentGroup.add(frontFace, backFace, leftFace, rightFace, pyramidFront, pyramidRight, pyramidLeft, pyramidBack);
+
+
+//base square points
+scene.add(monumentGroup);
+
+
+//animating scene
+animate();
