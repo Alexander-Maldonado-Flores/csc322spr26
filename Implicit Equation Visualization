@@ -1,3 +1,4 @@
+
 //THIS IS A JAVA SCRIPT CODE
 
 //========================
@@ -11,9 +12,9 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
 
-// Create Camera and Scene and Renderer\ (from docs)
+// Create Camera and Scene and Renderer 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
+scene.background = new THREE.Color(0x00000);
 
 const camera = new THREE.PerspectiveCamera(
   45,
@@ -21,10 +22,9 @@ const camera = new THREE.PerspectiveCamera(
   .1,
   1000,
 );
-camera.position.set(0, 0, 50);
+camera.position.set(0, 0, 5);
 camera.lookAt(0,0,0);
 
-// Create Renderer (from class docs) only modification is antialias which smoothes out jagged edges
 const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -47,7 +47,7 @@ function F(x, y)
 //points needed for sample+ counter for axes and threshold for distance
 const points = [];
 const counter = .05;
-const threshold = .05;
+const threshold = .075;
 
 for(let x = -5; x<=5; x += counter)
 {
@@ -63,7 +63,7 @@ for(let x = -5; x<=5; x += counter)
 // Geometry and material
 const geometry = new THREE.BufferGeometry().setFromPoints(points);
 const material = new THREE.PointsMaterial({
-  color: 0xffffff,
+  color: 0xFFFFFF,
   size: .05
 });
 
@@ -71,7 +71,7 @@ const material = new THREE.PointsMaterial({
 const curve = new THREE.Points(geometry, material);
 scene.add(curve);
 
-//my own animate function with the help of threejs' docs
+//animate
 
   function animate()
   {
